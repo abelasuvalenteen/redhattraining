@@ -1,0 +1,368 @@
+    1  exit
+    2  ssh lab@utility
+    3  ssh lab@utility
+    4  ssh root@master01
+    5  ssh lab@utility
+    6  clear
+    7  ssh lab@utility
+    8  clear
+    9  lab execute-troubleshoot start
+   10  clear
+   11  source /usr/local/etc/ocp4.config
+   12  oc login -u kubeadmin -p ${RHT_OCP4_KUBEADM_PASSWD} https://api.ocp4.example.com:6443
+   13  echo ${RHT_OCP4_KUBEADM_PASSWD}
+   14  clear
+   15  echo ${RHT_OCP4_KUBEADM_PASSWD}
+   16  oc get nodes
+   17  oc adm top nodes
+   18  oc adm top node
+   19  oc describe node master01
+   20  oc describe node master02
+   21  oc describe node master03
+   22  clear
+   23  oc get pod -n openshift-image-registry
+   24  oc logs --tail 3 -n openshift-image-registry cluster-image-registry-operator-5f47f6fcf7-bh22s
+   25  oc logs --tail 3 -n openshift-image-registry -c cluster-image-registry-operator cluster-image-registry-operator-5f47f6fcf7-bh22s
+   26  oc logs --tail 3 -n openshift-image-registry image-registry-64b69c4bf9-48xl5
+   27  clear
+   28  oc adm node-logs --tail 3 -u kubelet master01
+   29  oc debug node/master01
+   30  oc get pod -n openshift-image-registry
+   31  oc debug node/master02
+   32  clear
+   33  oc project execute-troubleshoot
+   34  oc get pod
+   35  oc status
+   36  oc get all
+   37  clera
+   38  clear
+   39  oc status
+   40  oc get events
+   41  skopeo inspect docker://registry.access.redhat.com/rhscl/postgresq-96-rhel7:1
+   42  skopeo inspect docker://registry.access.redhat.com/rhscl/postgresq-96-rhel7:3
+   43  skopeo inspect docker://registry.access.redhat.com/rhscl/postgresql-96-rhel7:3
+   44  clear
+   45  skopeo inspect docker://registry.access.redhat.com/rhscl/postgresql-96-rhel7:1
+   46  clear
+   47  od get all
+   48  oc get all
+   49  oc edit deployment/psql
+   50  oc status
+   51  oc get pods
+   52  oc get pods -w
+   53  lab execute-troubleshoot finish
+   54  oc adm top
+   55  oc get node
+   56  oc adm debug
+   57  history | grep oc adm
+   58  history | grep adm
+   59  oc adm node-logs --tail 3 -u cri-o master02
+   60  oc adm node-logs --tail 3 -u kubelet master02
+   61  oc debug node/master02
+   62  clear
+   63  ssh lab@utility
+   64  clear
+   65  lab auth-provider start
+   66  clear
+   67  source /usr/local/etc/ocp4.config
+   68  cat~/DO280/labs/auth-provider/htpasswd
+   69  htpasswd -c -B -b ~/DO280/labs/auth-provider/htpasswd admin redhat
+   70  htpasswd -c -B -b ~/DO280/labs/auth-provider/htpasswd developer developer
+   71  cat~/DO280/labs/auth-provider/htpasswd
+   72  cat ~/DO280/labs/auth-provider/htpasswd
+   73  htpasswd -c -B -b ~/DO280/labs/auth-provider/htpasswd admin redhat
+   74  cat ~/DO280/labs/auth-provider/htpasswd
+   75  htpasswd -b ~/DO280/labs/auth-provider/htpasswd developer developer
+   76  cat ~/DO280/labs/auth-provider/htpasswd
+   77  clear
+   78  oc login -u kubeadmin -p ${RHT_OCP4_KUBEADMIN_PASSWD} https://api.ocp4.example.com:6443
+   79  oc login -u kubeadmin -p ${RHT_OCP4_KUBEADM_PASSWD} https://api.ocp4.example.com:6443
+   80  oc create secret generic localusers --from-file htpasswd=/home/student/DO280/labs/auth-provider/htpasswd -n openshift-config
+   81  oc adm policy add-cluster-role-to-user cluster-admin admin
+   82  oc get oauth cluster -o yaml > ~/DO280/labs/auth-provider/oauth.yaml
+   83  vi ~/DO280/labs/auth-provider/oauth.yaml
+   84  oc replace -f ~/DO280/labs/auth-provider/oauth.yaml
+   85  oc get pod -n openshift-authentication
+   86  oc get pod -n openshift-authentication -w
+   87  oc login -u admin -p redhat
+   88  oc get nodes
+   89  oc login -u developer -p developer
+   90  oc get nodes
+   91  oc login -u admin -p redhat
+   92  oc get users
+   93  oc get identity
+   94  clear
+   95  oc extract secret/localusers -n openshift-config --to ~/DO280/labs/auth-provider/ --confirm
+   96  MANAGER_PASSWD="$(openssl rand -hex 15)"
+   97  htpasswd -b ~/DO280/labs/auth-provider/htpasswd manager ${MANAGER_PASSWD}
+   98  cat ~/DO280/labs/auth-provider/htpasswd 
+   99  oc set data secret/localusers --from-file htpasswd=/home/student/DO280/labs/auth-provider/htpasswd -n openshift-config
+  100  oc get pod -n openshift-config
+  101  oc get status -n openshift-config
+  102  oc get -n openshift-config
+  103  oc get secret -n openshift-config
+  104  clear
+  105  oc login -u manager -p ${MANAGER_PASSWD}
+  106  oc get pod
+  107  oc get users
+  108  oc get identity
+  109  oc login -u admin -p redhat
+  110  oc extract secret/localusers -n openshift-config --to ~/DO280/labs/auth-provider/ --confirm
+  111  htpasswd -D ~/DO280/labs/auth-provider/htpasswd manager
+  112  cat  ~/DO280/labs/auth-provider/htpasswd
+  113  oc set data secret/localusers --from-file htpasswd=/home/student/DO280/labs/auth-provider/htpasswd -n openshift-config
+  114  oc login -u manager -p ${MANAGER_PASSWD}
+  115  oc delete identity "myusers:manager"
+  116  oc delete user manager
+  117  oc login -u manager -p ${MANAGER_PASSWD}
+  118  oc get users
+  119  oc get identity
+  120  oc extract secret/localusers -n openshift-config --to -
+  121  oc login -u kubeadmin -p ${RHT_OCP4_KUBEADM_PASSWD}
+  122  oc projects
+  123  oc get projects
+  124  oc delete project auth-provider
+  125  oc edit oauth
+  126  clear
+  127  oc delete project auth-provider
+  128  ls 
+  129  oc edit oauth
+  130  oc delete secret localusers -n openshift-config
+  131  oc delete user --all
+  132  oc delete identity --all
+  133  oc get users
+  134  oc get identity
+  135  oc login -u admin -p redhat
+  136  oc get users
+  137  oc get identity
+  138  oc edit oauth
+  139  oc get users
+  140  oc delete secret localusers -n openshift-config
+  141  oc delete user --all
+  142  oc delete identity --all
+  143  lab auth-provider finish
+  144  history
+  145  ls 
+  146  l s-ltr
+  147  ls -ltr
+  148  cd DO280/
+  149  ls -ltr
+  150  history > openshift_lab_commands.txt
+  151  git status
+  152  ls -ltr
+  153  clear
+  154  lab authorization-rbac start
+  155  clear
+  156  oc login -u admin -p redhat https://api.ocp4.example.com:6443
+  157  oc get clusterrolebinding -o wide | grep -E 'Name|self-provisioner'
+  158  oc describe clusterrolebindings self-provisioners
+  159  clear
+  160  oc adm policy remove-cluster-role-from-group self-provisioner susyem:authenticated:oauth
+  161  oc describe clusterrolebindings self-provisioners
+  162  oc adm policy remove-cluster-role-from-group self-provisioner system:authenticated:oauth
+  163  oc describe clusterrolebindings self-provisioners
+  164  oc get clusterrolebinding -o wide | grep -E 'Name|self-provisioner'
+  165  oc login -u leader -p redhat
+  166  oc new-project testproject
+  167  clear
+  168  oc get users
+  169  oc login -u admin -p redhat
+  170  oc get users
+  171  oc new-project authorzation-rbac
+  172  oc policy add-role-to-user admin leader
+  173  oc adm groups new dev-group
+  174  oc adm groups new qa-group
+  175  oc adm groups add-users dev-group developer
+  176  oc adm groups add-users qa-group qa-engineer
+  177  oc get groups
+  178  oc login -u leader -p redhat
+  179  oc policy add-role-to-group edit dev-group
+  180  oc policy add-role-to-group view qa-group
+  181  oc get role-bindings -o wide
+  182  oc get rolebindings -o wide
+  183  oc login -u developer -p developer
+  184  oc new-app --name httpd httpd:2.4
+  185  oc policy add-role-to-user qa-engineer
+  186  oc policy add-role-to-user edit qa-engineer
+  187  oc login -u qa-engineer -p redhat
+  188  oc scale deployment httpd --replicas=3
+  189  oc login -u admin -p redhat
+  190  oc adm policy add-cluster-role-to-group --rolebinding-name self-provisioners self-provisioner system:authenticated:oauth
+  191  lab authorization-rbac finish
+  192  ls
+  193  history > openshift_lab_commands.txt
+  194  cat openshift_lab_commands.txt 
+  195  git
+  196  git clone https://github.com/abelasualenteen/redhattraining
+  197  git clone https://github.com/abelasuvalenteen/redhattraining
+  198  ls -ltr
+  199  mv openshift_lab_commands.txt redhattraining/
+  200  cd redhattraining/
+  201  git add .
+  202  git commit -m "Lab commands"
+  203  git push
+  204  cd ..
+  205  clear
+  206  oc get pod
+  207  oc rsh httpd-7bc646b9c-l87lw
+  208  clear
+  209  lab authorization-secrets start
+  210  clear
+  211  oc login -u developer -p developer https://api.ocp4.example.com:6443
+  212  oc new-project authorization-secrets
+  213  oc create secret generic mysql --from-literal user=myuser --from-literal password=redhat123 --from-literal database=test_secrets --from-literal hostname=mysql
+  214  oc new-app --name mysql --docker-image registry.access.redhat.com/rhscl/mysql-57-rhel7:5.7-47
+  215  oc get pod
+  216  oc get pods -w
+  217  oc set env deployment/mysql --prefix MYSQL_ --from secret/mysql
+  218  oc get pods -w
+  219  oc rsh mysql-85c9568c54-csv5x
+  220  oc new-app --name quotes --docker-image quay.io/redhattraining/famous-quotes:1.0
+  221  oc get pods -w
+  222  oc get pods -l deployment=quotes -w
+  223  oc set env deployment/quotes --prefix QUOTES_ --from secret/mysql
+  224  oc get pods -l deployment=quotes -w
+  225  ococ set env deployment/quotes --prefix QUOTES_ --from secret/mysql
+  226  oc set env deployment/quotes --prefix QUOTES_ --from secret/mysql
+  227  oc get pods -l deployment=quotes -w
+  228  oc logs pod/quotes-79865b69b6-97n9c
+  229  oc expose service quotes
+  230  oc get route quotes
+  231  curl https://quotes-authorization-secrets.apps.ocp4.example.com
+  232  curl https://quotes-authorization-secrets.apps.ocp4.example.com/env
+  233  curl http://quotes-authorization-secrets.apps.ocp4.example.com/env
+  234  curl http://quotes-authorization-secrets.apps.ocp4.example.com/status
+  235  curl http://quotes-authorization-secrets.apps.ocp4.example.com/random
+  236  oc delete project authorization-secrets
+  237  lab authorization-secrets finish
+  238  clear
+  239  lab authorization-scc start
+  240  clear
+  241  oc login -u developer -p developer https://api.ocp4.example.com:6443
+  242  oc new-project authrization-scc
+  243  oc new-app --name gitlab --docker-image gitlab/gitlab-ce:8.4.3-ce.0
+  244  oc get pods -o wide
+  245  oc get pods -o wide -w
+  246  oc get pods
+  247  clear
+  248  oc get pods -o wide
+  249  oc get pods
+  250  oc logs pod/gitlab-644456cbb9-xcgwt
+  251  clear
+  252  oc creat sa gitlab-sa
+  253  oc create sa gitlab-sa
+  254  oc login -u admin -p redhat
+  255  oc adm policy add-scc-to-user anyuid -z gitlab-sa
+  256  oc login -u developer -p developer
+  257  oc set serviceaccount deployment gitlab gitlab-sa
+  258  oc get pods -o wide -w
+  259  oc get pods
+  260  clear
+  261  oc expose service gitlab --port 80
+  262  oc get route gitlab
+  263  curl -s http://gitlab-authrization-scc.apps.ocp4.example.com/users/sign_in | grep title
+  264  oc delete project authorization-scc
+  265  whoami
+  266  oc get user
+  267  oc whoami
+  268  lab authorization-scc finish
+  269  history
+  270  clear lab network-sdn start
+  271  lab network-sdn start
+  272  clear
+  273  oc login -u developer -p developer https://api.ocp4.example.com:6443
+  274  oc new-project network-sdn
+  275  oc status
+  276  cat /home/student/DO280/labs/network-sdn/todo-db.yaml 
+  277  clear
+  278  cd ~/DO280/labs/network-sdn/
+  279  ls
+  280  cat todo-db.yaml 
+  281  oc create -f todo-db.yaml 
+  282  oc status
+  283  oc get pods
+  284  oc describe project
+  285  clear
+  286  oc status
+  287  oc get ods
+  288  oc get pods
+  289  oc cp db-data.sql mysql-8666449d8b-6vl6n
+  290  oc cp db-data.sql mysql-8666449d8b-6vl6n:/tmp/
+  291  oc rsh mysql-8666449d8b-6vl6n bash
+  292  oc create -f todo-frontend.yaml 
+  293  oc status
+  294  oc get pods -o wide -w
+  295  oc expose service frontend --hostname todo.apps.ocp4.example.com
+  296  oc describe route/frontend
+  297  oc describe svc/frontend
+  298  oc describe deploy/frontend
+  299  clear
+  300  oc get routes
+  301  oc get pods
+  302  oc logs pod/frontend-5598cfc446-p9mkm 
+  303  oc get service/mysql -o jsonpath="{.spec.clusterIP}{'\n'}"
+  304  oc debug -t deployment/frontend
+  305  oc get service/frontend -o jsonpath="{spec.clusterIP}{'\n}"
+  306  oc get service/frontend -o jsonpath="{.spec.clusterIP}{'\n}"
+  307  oc get service/frontend -o jsonpath="{.spec.clusterIP}{'\n}'"
+  308  oc get service/frontend -o jsonpath="{.spec.clusterIP}{'\n'}"
+  309  oc debug -t deployment/mysql --image registry.access.redhat.com/ubi8/ubi:8.0
+  310  oc get pods -o wide -l name=frontend
+  311  oc debug -t deployment/mysql --image registry.access.redhat.com/ubi8/ubi:8.0
+  312  oc get svc
+  313  oc describe svc/frontend
+  314  oc describe deployment/frontend
+  315  oc describe deployment/frontend | grep Labels -A3
+  316  oc edit svc/frontend
+  317  oc describe svc/frontend
+  318  oc get pods -o wide -w
+  319  cd
+  320  oc delete project network-sdn
+  321  lab network-sdn finish
+  322  clear
+  323  lab network-ingress start
+  324  oc login -u developer -p developer https://api.ocp4.example.com:6443
+  325  oc new-project network-ingress
+  326  oc create -f ~/DO280/labs/network-ingress/todo-app-v1.yaml 
+  327  oc status
+  328  oc get pods
+  329  oc expose svc todo-http --hostname todo-http.apps.ocp4.example.com
+  330  oc describe route/todo-http
+  331  oc status
+  332  oc get routes
+  333  curl https://todo-https.apps.ocp4.example.com
+  334  oc login -u admin -p redhat
+  335  oc extract secrets/router-ca --keys tls.crt -n openshift-ingress-operator
+  336  curl -I -v --cacert tls.crt https://todo-https.aps.ocp4.example.com
+  337  curl -I -v --cacert tls.crt https://todo-https.apps.ocp4.example.com
+  338  oc login -u developer -p developer
+  339  curl -I -v --cacert tls.crt https://todo-https.apps.ocp4.example.com
+  340  oc get svc/todo-http -o jsonpath="{.spec.clusterIp}{'\n'}"
+  341  oc get svc/todo-http -o jsonpath="{.spec.clusterIP}{'\n'}"
+  342  
+  343  oc debug -t deployment/todo-http --image registry.access.redhat.com/ubi8/ubi:8.0
+  344  oc delete route todo-https
+  345  cd ~/DO280/labs/network-ingress/
+  346  cd certs
+  347  ls -al
+  348  openssl genrsa -out training.key 2048
+  349  openssl req -new -subj "/C=US/ST=Nort Carolina/L=Raleigh/O=Red Hat/CN=todo-https.apps.ocp4.example.com" -key training.key -out training.csr
+  350  openssl x509 -req -in training.csr -passin file:passphrase.txt -CA training-CA.pem -CAkey training-CA.key -CAcreateserial -out training.crt -days 1825 -sha256 -extfile  training.ext
+  351  ls -al
+  352  cd ~/DO280/labs/network-ingress/
+  353  ls -al
+  354  oc create secret tls todo-certs --cert certs/training.crt --key certs/training.key
+  355  oc create -f todo-app-v2.yaml
+  356  oc get pods
+  357  oc describe pod todo-https-85bff5b996-pcr6r | grep Mounts -A2
+  358  oc create route passthrough todo-https --service todo-https --port 8443 --hostname todo-https.apps.ocp4.example.com
+  359  curl -vvI --cacert certs/training-CA.pem https://todo-https.apps.ocp4.example.com
+  360  oc get svc todo-https -o jsonpath={.spec.clusterIP}{'\n'}"
+  361  oc get svc todo-https -o jsonpath="{.spec.clusterIP}{'\n'}"
+  362  oc debug -t deployment/todo-https --image registry.access.redhat.com/ubi8/ubi:8.0
+  363  cd
+  364  oc delete project network-ingress
+  365  lab network-ingress finish
+  366  cd DO280/
+  367  cd redhattraining/
+  368  history > openshift_lab_commands1.txt
